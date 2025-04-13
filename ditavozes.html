@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicação Alternativa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 800px;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 180px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+        .card:hover {
+            background-color: #e0e0e0;
+        }
+        .card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="card-container"></div>
+
+    <script>
+        const phrases = [
+            "Olá", "Eu quero", "Sim", "Não", "Estou com fome", "Estou com sede",
+            "Preciso de ajuda", "Quero ir ao banheiro", "Estou feliz", "Estou triste", "Estou cansado"
+        ];
+
+        // Função para carregar as imagens de uma pasta local
+        async function fetchImages() {
+            const container = document.getElementById("card-container");
+            container.innerHTML = ""; // Limpar o conteúdo anterior antes de adicionar novos cartões
+
+            // Caminho da pasta local de imagens
+            const imageFolderPath = "imagens/"; // Substitua pelo caminho correto da sua pasta
+
+            // Laço para criar um cartão para cada frase
+            for (const phrase of phrases) {
+                try {
+                    // Aqui estamos assumindo que as imagens têm o mesmo nome das frases, com .jpg ou .png
+                    const imgUrl = `${imageFolderPath}${encodeURIComponent(phrase)}.png`; // Substitua por .png ou .jpg se for o caso
+
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    card.onclick = () => speak(phrase); // Ao clicar, falar a frase
+
+                    // Criando o elemento de imagem
+                    const img = document.createElement("img");
+                    img.src = imgUrl; // URL da imagem local
+                    img.alt = phrase; // Texto alternativo para a imagem
+                    
+                    // Criando o elemento de texto
+                    const text = document.createElement("span");
+                    text.textContent = phrase; // Definindo o texto da frase
+
+                    // Adicionando a imagem e o texto ao cartão
+                    card.appendChild(img);
+                    card.appendChild(text);
+
+                    // Adicionando o cartão ao container
+                    container.appendChild(card);
+                } catch (error) {
+                    console.error("Erro ao buscar imagem para", phrase, error); // Tratamento de erro caso a imagem não seja encontrada
+                }
+            }
+        }
+
+        // Função para falar a frase clicada
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance); // Usando a API de síntese de fala
+        }
+
+        // Chamando a função para carregar as imagens da pasta local
+        fetchImages();
+    </script>
+</body>
+</html>
